@@ -1,7 +1,11 @@
-/* примерочная — подтягивает профиль текущего пользователя и даёт менять хедер/аватар/плашку */
+/* ==== примерочная ==== */
+
+/* адрес файла с хедерами (данные правятся в headers.json, не тут) */
+var FIT_HEADERS_URL = "https://cdn.jsdelivr.net/gh/dietcherrycola92-pixel/assets/headers.json";
+
 $(function () {
   var box = document.getElementById("fitBox");
-  if (!box) return; // на страницах без примерочной ничего не делаем
+  if (!box) return;
 
   var uid = (typeof UserID !== "undefined" && UserID) ? String(UserID) : null;
   if (!uid) { box.innerHTML = "войди на форум"; return; }
@@ -38,17 +42,65 @@ $(function () {
       var clone = box.querySelector(".post-author");
       var a2 = clone.querySelector(".pa-avatar img");
       var h2 = clone.querySelector(".pa-fld1 img");
+      var pl = clone.querySelector(".pa-fld5 .pl");
       var u2 = clone.querySelector(".pa-fld5 .pl up");
       var d2 = clone.querySelector(".pa-fld5 .pl down");
 
+      /* поля ввода */
       function on(id, fn) {
         var el = document.getElementById(id);
         if (el) el.addEventListener("input", function () { fn(this.value); });
       }
-      on("inHdr", function (v) { if (h2 && v) h2.src = v; });
       on("inAva", function (v) { if (a2 && v) a2.src = v; });
       on("inU",   function (v) { if (u2) u2.textContent = v; });
       on("inD",   function (v) { if (d2) d2.textContent = v; });
+
+      /* магазин хедеров */
+      var gridH = document.getElementById("fitHeaders");
+      var boxP  = document.getElementById("fitPlates");
+
+      function renderPlates(colors) {
+        if (!boxP) return;
+        boxP.innerHTML = "";
+        colors.forEach(function (col, idx) {
+          var c = document.createElement("div");
+          c.className = "c";
+          c.style.background = col;
+          c.onclick = function () {
+            var all = boxP.getElementsByClassName("c");
+            for (var i = 0; i < all.length; i++) all[i].classList.remove("sel");
+            c.classList.add("sel");
+            if (pl) pl.style.background = col;
+          };
+          boxP.appendChild(c);
+          if (idx === 0) c.onclick();
+        });
+      }
+
+      function renderShop(list) {
+        if (!gridH) return;
+        gridH.innerHTML = "";
+        list.forEach(function (H) {
+          var d = document.createElement("div");
+          d.className = "h";
+          d.title = H.name || "";
+          d.style.backgroundImage = "url(" + H.img + ")";
+          d.onclick = function () {
+            var all = gridH.getElementsByClassName("h");
+            for (var i = 0; i < all.length; i++) all[i].classList.remove("sel");
+            d.classList.add("sel");
+            if (h2) h2.src = H.img;
+            renderPlates(H.pl || []);
+          };
+          gridH.appendChild(d);
+        });
+      }
+
+      /* грузим хедеры из json */
+      fetch(FIT_HEADERS_URL)
+        .then(function (r) { return r.json(); })
+        .then(function (list) { renderShop(list); })
+        .catch(function () { if (gridH) gridH.innerHTML = "<span style='color:#b58596'>не удалось загрузить хедеры</span>"; });
     })
     .catch(function () { box.innerHTML = "ошибка загрузки профиля"; });
 });
