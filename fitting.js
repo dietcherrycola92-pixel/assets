@@ -1,7 +1,7 @@
 /* ==== примерочная ==== */
 
 /* адрес файла с хедерами (данные правятся в headers.json, не тут) */
-var FIT_HEADERS_URL = "https://cdn.jsdelivr.net/gh/dietcherrycola92-pixel/assets/headers.json";
+var FIT_HEADERS_URL = "https://cdn.jsdelivr.net/gh/dietcherrycola92-pixel/assets/headers.json?=v2";
 
 $(function () {
   var box = document.getElementById("fitBox");
