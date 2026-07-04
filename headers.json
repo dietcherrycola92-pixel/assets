@@ -1,6 +1,6 @@
 [
   { "name": "луг",     "img": "https://i.postimg.cc/pTJDdrty/fon-profila.png", "pl": ["#97a975", "#7c8768", "#b0c18f"] },
-  { "name": "океан",   "img": "https://i.postimg.cc/pTJDdrty/fon-profila.png", "pl": ["#7d9cb1", "#4a6887", "#b4b9c7"] },
-  { "name": "лаванда", "img": "https://i.postimg.cc/pTJDdrty/fon-profila.png", "pl": ["#9498c2", "#616293", "#b9a8c4"] },
+  { "name": "океан",   "img": "https://i.pinimg.com/736x/92/53/1b/92531b7976b45761bc8231220f3494b7.jpg", "pl": ["#7d9cb1", "#4a6887", "#b4b9c7"] },
+  { "name": "лаванда", "img": "https://i.pinimg.com/1200x/54/5c/53/545c53e4136884a3108f9662417cbb04.jpg", "pl": ["#9498c2", "#616293", "#b9a8c4"] },
   { "name": "розовый", "img": "https://i.postimg.cc/pTJDdrty/fon-profila.png", "pl": ["#d7a3b6", "#af6c92", "#e1b2b8"] }
 ]
