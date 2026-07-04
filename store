@@ -1,0 +1,48 @@
+$(function(){
+  var box = document.getElementById("fitBox");
+  if (!box) return;
+  var uid = (typeof UserID !== "undefined" && UserID) ? String(UserID) : null;
+  if (!uid) { box.innerHTML = "войди на форум"; return; }
+
+  fetch("/profile.php?id=" + uid)
+    .then(function (r) { return r.arrayBuffer(); })
+    .then(function (buf) {
+      var html = new TextDecoder("windows-1251").decode(buf);
+      var doc = new DOMParser().parseFromString(html, "text/html");
+      function q(s){ return doc.querySelector(s); }
+      function t(el){ return el ? el.textContent.trim() : ""; }
+
+      var name  = t(q("#profile-name strong"))  || t(q("#profile-name"));
+      var title = t(q("#profile-title strong")) || t(q("#profile-title"));
+      var aEl = q("#pa-avatar img"); var ava = aEl ? aEl.getAttribute("src") : "";
+      var hEl = q("#pa-fld1 img");   var hdr = hEl ? hEl.getAttribute("src") : "";
+      var money = t(q("#pa-fld3 strong")).replace(/[^0-9]/g, "") || "0";
+      var pm = t(q("#pa-posts strong")).match(/[0-9]+/); var posts = pm ? pm[0] : "0";
+      var uEl = q("#pa-fld5 .pl up");   var plU = uEl ? uEl.textContent : "";
+      var dEl = q("#pa-fld5 .pl down"); var plD = dEl ? dEl.textContent : "";
+
+      box.innerHTML =
+        "<div class='post-author'><ul>" +
+        "<li class='pa-fld1'><img src='" + hdr + "'></li>" +
+        "<li class='pa-author'><a>" + name + "</a></li>" +
+        "<li class='pa-title'>" + title + "</li>" +
+        "<li class='pa-avatar item2'><img src='" + ava + "'></li>" +
+        "<li class='pa-posts'><span class='fld-name'>Сообщений:</span> " + posts + "</li>" +
+        "<li class='pa-respect'><span class='fld-name'>Уважение:</span> <span>+0</span></li>" +
+        "<li class='pa-fld3'><span class='fld-name'>деньги:</span> " + money + "</li>" +
+        "<li class='pa-fld5'><span class='fld-name'>плашка:</span> <div class='pl'><up>" + plU + "</up><down>" + plD + "</down></div></li>" +
+        "</ul></div>";
+
+      var clone = box.querySelector(".post-author");
+      var a2 = clone.querySelector(".pa-avatar img");
+      var h2 = clone.querySelector(".pa-fld1 img");
+      var u2 = clone.querySelector(".pa-fld5 .pl up");
+      var d2 = clone.querySelector(".pa-fld5 .pl down");
+      function on(id, fn){ var el = document.getElementById(id); if (el) el.addEventListener("input", function(){ fn(this.value); }); }
+      on("inHdr", function(v){ if (h2 && v) h2.src = v; });
+      on("inAva", function(v){ if (a2 && v) a2.src = v; });
+      on("inU",   function(v){ if (u2) u2.textContent = v; });
+      on("inD",   function(v){ if (d2) d2.textContent = v; });
+    })
+    .catch(function(){ box.innerHTML = "ошибка загрузки профиля"; });
+});
